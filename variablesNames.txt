@@ -1,0 +1,4 @@
+backlighStatus
+FPRStatus
+selectedColor
+backlightStatus

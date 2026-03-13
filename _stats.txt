@@ -1,0 +1,23 @@
+Data to first frame: 610.6 kBytes
+
+------------------------------------
+
+Geometry: 39.7kB in 29 files
+Textures (WebP): 586.6kB in 6 files (JPEG/PNG: 945.9kB)
+Envmaps (WebP): 0.0kB in 0 files (JPEG/PNG: 0.0kB)
+Totals (WebP): 626.3kB in 35 files (JPEG/PNG: 985.6kB)
+
+  -- Largest 5 Files --
+602.3kB - 157f5d36-948a-49cb-afcb-5f2feb12e965.png
+376.8kB - 157f5d36-948a-49cb-afcb-5f2feb12e965.webp
+245.2kB - hierarchy.xml
+75.1kB - 1672afa7-5deb-4e6b-be27-37e8e7845472.png
+72.9kB - 437eda15-dfed-43a5-8c98-91c511db274d.png
+69.0kB - a5615019-1a00-48ed-9581-62d22a60e626.png
+
+Total Trianges: 944
+Total Textures: 0
+Total Materials: 16
+Total SurfaceGroups: 15
+
+STUDIO INFINITY REAL-TIME 3D v2.0.574 from 'C:/Niteen/SHARP/RnD/test44.hss'
