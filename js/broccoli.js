@@ -626,6 +626,57 @@ Blockly.Blocks['inline_script'] = {
   }
 };
 
+Blockly.Blocks['window_value'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Window Value")
+        .appendField("path")
+        .appendField(new Blockly.FieldTextInput("selectedConfig.submenu_positionView"), "pathExpr");
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+    this.setColour(280);
+    this.setTooltip("Reads a value from window using a path. Examples: selectedConfig, selectedConfig.submenu_positionView, selectedConfig.menuList[0]");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Blocks['set_timeout'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Set Timeout")
+        .appendField("store handle as")
+        .appendField(new Blockly.FieldTextInput("myTimeout"), "VAR");
+    this.appendValueInput("DELAY")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("delay (ms)");
+    this.appendStatementInput("DO")
+        .setCheck(null)
+        .appendField("do");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(135);
+    this.setTooltip("Executes the inner blocks after a delay (ms). Stores the handle in a named variable so it can be cancelled with Clear Timeout.");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Blocks['clear_timeout'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Clear Timeout")
+        .appendField("handle")
+        .appendField(new Blockly.FieldTextInput("myTimeout"), "VAR");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(135);
+    this.setTooltip("Cancels a pending timeout using the handle variable name set in Set Timeout.");
+    this.setHelpUrl("");
+  }
+};
+
 Blockly.JavaScript['stopanim'] = function(block) {
   var value_animName = Blockly.JavaScript.valueToCode(block, 'animName', Blockly.JavaScript.ORDER_ATOMIC);
   
@@ -667,6 +718,58 @@ Blockly.Blocks['play_animation'] = {
     this.setNextStatement(true, null);
     this.setColour(320);
  this.setTooltip("groupApplyState(name of the state, options, callback)");
+ this.setHelpUrl("dddd");
+  }
+};
+
+Blockly.Blocks['play_animation_jump'] = {
+  init: function() {
+  this.appendDummyInput()
+    .appendField("Play Animation in Time (Jump)");
+  this.appendValueInput("animation")
+    .setCheck("String")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Animation");
+  this.appendValueInput("positionS")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Pos");
+  this.appendValueInput("durationMs")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Duration (ms)");
+  this.appendStatementInput("callBackFunction")
+    .setCheck(null)
+    .appendField("Callback function");
+  this.appendValueInput("numloops")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Num Loops");
+  this.appendValueInput("onSample")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("On Sample");
+  this.appendValueInput("bypass")
+    .setCheck("Boolean")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Bypass");
+  this.appendValueInput("previousAnimFrame")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("From");
+  this.appendValueInput("jumpValue")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Jump");
+  this.appendDummyInput()
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("DON'T Wait")
+    .appendField(new Blockly.FieldCheckbox("FALSE"), "noWait");
+  this.setInputsInline(false);
+  this.setPreviousStatement(true, null);
+  this.setNextStatement(true, null);
+  this.setColour(320);
+ this.setTooltip("Play all animation children with jump mode and previous frame support");
  this.setHelpUrl("dddd");
   }
 };
@@ -848,6 +951,43 @@ Blockly.JavaScript['play_animation'] = function(block) {
   var code = '';
   code += 'scene.addSequenceWaitValue(' + strNoWait + ');\n';
   code += playFunction + value_animation + ',' + value_positions + ',' + value_durationms + ', function(){'+ statements_callbackfunction + '});' + additionalCode;
+  if (checkbox_nowait)
+    code+= '\n';
+  else
+    code+= yieldBlockTerminator;
+  return code;
+};
+
+Blockly.JavaScript['play_animation_jump'] = function(block) {
+  var value_animation = Blockly.JavaScript.valueToCode(block, 'animation', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_positions = Blockly.JavaScript.valueToCode(block, 'positionS', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_durationms = Blockly.JavaScript.valueToCode(block, 'durationMs', Blockly.JavaScript.ORDER_ATOMIC);
+  var statements_callbackfunction = Blockly.JavaScript.statementToCode(block, 'callBackFunction');
+  var value_numloops = Blockly.JavaScript.valueToCode(block, 'numloops', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_onsample = Blockly.JavaScript.valueToCode(block, 'onSample', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_bypass = Blockly.JavaScript.valueToCode(block, 'bypass', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_previousanimframe = Blockly.JavaScript.valueToCode(block, 'previousAnimFrame', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_jumpvalue = Blockly.JavaScript.valueToCode(block, 'jumpValue', Blockly.JavaScript.ORDER_ATOMIC);
+  var checkbox_nowait = block.getFieldValue('noWait') === 'TRUE';
+  var strNoWait = checkbox_nowait ? '0' : '1';
+
+  if (!value_numloops.length)
+    value_numloops = 'undefined';
+  if (!value_onsample.length)
+    value_onsample = 'undefined';
+  if (!value_bypass.length)
+    value_bypass = 'true';
+  if (!value_previousanimframe.length)
+    value_previousanimframe = 'undefined';
+  if (!value_jumpvalue.length)
+    value_jumpvalue = 'undefined';
+
+  var code = '';
+  code += 'if (currentAnimFrame != previousAnimFrame) {\n';
+  code += 'scene.addSequenceWaitValue(' + strNoWait + ');\n';
+  code += 'scene.animPlayAllChildrenInTime(' + value_animation + ',' + value_positions + ',' + value_durationms + ', function(){'+ statements_callbackfunction + '}, ' + value_numloops + ', ' + value_onsample + ', ' + value_bypass + ', ' + value_previousanimframe + ', ' + value_jumpvalue + ');\n';
+  code += 'previousAnimFrame = ' + value_positions + ';\n';
+  code += '}';
   if (checkbox_nowait)
     code+= '\n';
   else
@@ -1091,6 +1231,35 @@ Blockly.JavaScript['inline_script'] = function(block) {
   var text_jscode = block.getFieldValue('JSCode');
   // TODO: Assemble JavaScript into code variable.
   var code = text_jscode + ";\n";
+  return code;
+};
+
+Blockly.JavaScript['window_value'] = function(block) {
+  var pathExpr = (block.getFieldValue('pathExpr') || '').trim();
+  var normalized = pathExpr.replace(/^window(?=\.|\[|$)/, '');
+  var code = 'window';
+
+  if (normalized.length) {
+    if (normalized.charAt(0) === '[' || normalized.charAt(0) === '.')
+      code += normalized;
+    else
+      code += '.' + normalized;
+  }
+
+  return [code, Blockly.JavaScript.ORDER_MEMBER];
+};
+
+Blockly.JavaScript['set_timeout'] = function(block) {
+  var varName = block.getFieldValue('VAR') || 'myTimeout';
+  var delay = Blockly.JavaScript.valueToCode(block, 'DELAY', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  var statements = Blockly.JavaScript.statementToCode(block, 'DO');
+  var code = varName + ' = setTimeout(function() {\n' + statements + '}, ' + delay + ');\n';
+  return code;
+};
+
+Blockly.JavaScript['clear_timeout'] = function(block) {
+  var varName = block.getFieldValue('VAR') || 'myTimeout';
+  var code = 'clearTimeout(' + varName + ');\n';
   return code;
 };
 

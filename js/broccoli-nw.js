@@ -670,6 +670,58 @@ Blockly.Blocks['play_animation'] = {
   }
 };
 
+Blockly.Blocks['play_animation_jump'] = {
+  init: function() {
+  this.appendDummyInput()
+    .appendField("Play Animation in Time (Jump)");
+  this.appendValueInput("animation")
+    .setCheck("String")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Animation");
+  this.appendValueInput("positionS")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Pos");
+  this.appendValueInput("durationMs")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Duration (ms)");
+  this.appendStatementInput("callBackFunction")
+    .setCheck(null)
+    .appendField("Callback function");
+  this.appendValueInput("numloops")
+    .setCheck("Number")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Num Loops");
+  this.appendValueInput("onSample")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("On Sample");
+  this.appendValueInput("bypass")
+    .setCheck("Boolean")
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Bypass");
+  this.appendValueInput("previousAnimFrame")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("From");
+  this.appendValueInput("jumpValue")
+    .setCheck(null)
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("Jump");
+  this.appendDummyInput()
+    .setAlign(Blockly.ALIGN_RIGHT)
+    .appendField("DON'T Wait")
+    .appendField(new Blockly.FieldCheckbox("FALSE"), "noWait");
+  this.setInputsInline(false);
+  this.setPreviousStatement(true, null);
+  this.setNextStatement(true, null);
+  this.setColour(320);
+ this.setTooltip("Play all animation children with jump mode and previous frame support");
+ this.setHelpUrl("dddd");
+  }
+};
+
 Blockly.Blocks['setanimuseframes'] = {
   init: function() {
     this.appendDummyInput()
@@ -832,6 +884,43 @@ Blockly.JavaScript['play_animation'] = function(block) {
   var code = '';
   code += 'scene.addSequenceWaitValue(' + strNoWait + ');\n';
   code += playFunction + value_animation + ',' + value_positions + ',' + value_durationms + ', function(){'+ statements_callbackfunction + '});' + additionalCode;
+  if (checkbox_nowait)
+    code+= '\n';
+  else
+    code+= yieldBlockTerminator;
+  return code;
+};
+
+Blockly.JavaScript['play_animation_jump'] = function(block) {
+  var value_animation = Blockly.JavaScript.valueToCode(block, 'animation', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_positions = Blockly.JavaScript.valueToCode(block, 'positionS', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_durationms = Blockly.JavaScript.valueToCode(block, 'durationMs', Blockly.JavaScript.ORDER_ATOMIC);
+  var statements_callbackfunction = Blockly.JavaScript.statementToCode(block, 'callBackFunction');
+  var value_numloops = Blockly.JavaScript.valueToCode(block, 'numloops', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_onsample = Blockly.JavaScript.valueToCode(block, 'onSample', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_bypass = Blockly.JavaScript.valueToCode(block, 'bypass', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_previousanimframe = Blockly.JavaScript.valueToCode(block, 'previousAnimFrame', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_jumpvalue = Blockly.JavaScript.valueToCode(block, 'jumpValue', Blockly.JavaScript.ORDER_ATOMIC);
+  var checkbox_nowait = block.getFieldValue('noWait') === 'TRUE';
+  var strNoWait = checkbox_nowait ? '0' : '1';
+
+  if (!value_numloops.length)
+    value_numloops = 'undefined';
+  if (!value_onsample.length)
+    value_onsample = 'undefined';
+  if (!value_bypass.length)
+    value_bypass = 'true';
+  if (!value_previousanimframe.length)
+    value_previousanimframe = 'undefined';
+  if (!value_jumpvalue.length)
+    value_jumpvalue = 'undefined';
+
+  var code = '';
+  code += 'if (currentAnimFrame != previousAnimFrame) {\n';
+  code += 'scene.addSequenceWaitValue(' + strNoWait + ');\n';
+  code += 'scene.animPlayAllChildrenInTime(' + value_animation + ',' + value_positions + ',' + value_durationms + ', function(){'+ statements_callbackfunction + '}, ' + value_numloops + ', ' + value_onsample + ', ' + value_bypass + ', ' + value_previousanimframe + ', ' + value_jumpvalue + ');\n';
+  code += 'previousAnimFrame = ' + value_positions + ';\n';
+  code += '}';
   if (checkbox_nowait)
     code+= '\n';
   else

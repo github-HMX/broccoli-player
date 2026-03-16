@@ -221,6 +221,43 @@
              </block>
            </value>
          </block>
+        <block type="play_animation_jump">
+           <value name="animation">
+             <block type="animnames">
+               <field name="animOptions">anim1</field>
+             </block>
+           </value>
+           <value name="positionS">
+             <block type="math_number">
+               <field name="NUM">50</field>
+             </block>
+           </value>
+           <value name="durationMs">
+             <block type="math_number">
+               <field name="NUM">1000</field>
+             </block>
+           </value>
+           <value name="numloops">
+             <block type="math_number">
+               <field name="NUM">0</field>
+             </block>
+           </value>
+           <value name="bypass">
+             <block type="logic_boolean">
+               <field name="BOOL">TRUE</field>
+             </block>
+           </value>
+           <value name="previousAnimFrame">
+             <block type="math_number">
+               <field name="NUM">0</field>
+             </block>
+           </value>
+           <value name="jumpValue">
+             <block type="math_number">
+               <field name="NUM">0</field>
+             </block>
+           </value>
+         </block>
          <block type="setanimuseframes">
           <value name="useFrames">
             <block type="logic_boolean">
@@ -247,6 +284,20 @@
            //Multiple lines;
            </field>
          </block>
+        <block type="window_value">
+          <field name="pathExpr">selectedConfig.submenu_positionView</field>
+        </block>
+        <block type="set_timeout">
+          <field name="VAR">myTimeout</field>
+          <value name="DELAY">
+            <block type="math_number">
+              <field name="NUM">1000</field>
+            </block>
+          </value>
+        </block>
+        <block type="clear_timeout">
+          <field name="VAR">myTimeout</field>
+        </block>
         <block type="statenames">
           <field name="stateOptions"></field>
         </block>

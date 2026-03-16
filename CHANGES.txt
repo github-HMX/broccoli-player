@@ -1,0 +1,111 @@
+====================================================
+ BROCCOLI PLAYER - GIT DIFF CHANGE BREAKDOWN
+====================================================
+
+FILES CHANGED: js/broccoli.js, index.html
+
+
+----------------------------------------------------
+ js/broccoli.js
+----------------------------------------------------
+
+BLOCK DEFINITIONS ADDED (Blockly.Blocks[...])
+----------------------------------------------
+
+1. window_value  (line ~629)
+   - Output block, colour 280 (purple)
+   - Single FieldTextInput field: pathExpr
+     Default value: selectedConfig.submenu_positionView
+
+2. set_timeout  (line ~645)
+   - Statement block, colour 135 (green)
+   - Fields:
+       VAR      - handle variable name (default: myTimeout)
+       DELAY    - number input (delay in ms)
+       DO       - statement body (inner blocks)
+
+3. clear_timeout  (line ~673)
+   - Statement block, colour 135 (green)
+   - Fields:
+       VAR      - handle variable name to cancel (default: myTimeout)
+
+4. play_animation_jump  (line ~722)
+   - Statement block, colour 320 (pink)
+   - Inputs:
+       animation        - animation name
+       positionS        - target position (number)
+       durationMs       - duration in milliseconds
+       callBackFunction - statement body (callback)
+       numloops         - number of loops
+       onSample         - easing sample
+       bypass           - boolean
+       previousAnimFrame - from-frame value
+       jumpValue        - jump amount
+   - Field:
+       noWait (DON'T Wait) - checkbox, skips sequence yield
+
+
+JAVASCRIPT GENERATORS ADDED (Blockly.JavaScript[...])
+------------------------------------------------------
+
+1. window_value
+   - Strips leading "window" if user typed it
+   - Builds: window.xxx  OR  window[xxx]  OR  window.a.b[0]
+   - Examples:
+       selectedConfig               -> window.selectedConfig
+       selectedConfig.submenu_x     -> window.selectedConfig.submenu_x
+       selectedConfig.menuList[0]   -> window.selectedConfig.menuList[0]
+       window.selectedConfig        -> window.selectedConfig  (normalized)
+
+2. set_timeout
+   - Generated code:
+       myTimeout = setTimeout(function() {
+         // inner blocks
+       }, 1000);
+
+3. clear_timeout
+   - Generated code:
+       clearTimeout(myTimeout);
+
+4. play_animation_jump
+   - Generated code:
+       if (currentAnimFrame != previousAnimFrame) {
+         scene.addSequenceWaitValue(1);
+         scene.animPlayAllChildrenInTime(anim, pos, dur, function(){
+           // callback blocks
+         }, numloops, onSample, bypass, previousAnimFrame, jumpValue);
+         previousAnimFrame = pos;
+       }  // + yieldBlockTerminator unless noWait is checked
+
+
+----------------------------------------------------
+ index.html  (Toolbox XML - HMX scene category)
+----------------------------------------------------
+
+NEW TOOLBOX ENTRIES ADDED:
+---------------------------
+
+1. play_animation_jump
+   Default values:
+     animation        = anim1
+     positionS        = 50
+     durationMs       = 1000
+     numloops         = 0
+     bypass           = TRUE
+     previousAnimFrame = 0
+     jumpValue        = 0
+
+2. window_value
+   Default values:
+     pathExpr = selectedConfig.submenu_positionView
+
+3. set_timeout
+   Default values:
+     VAR   = myTimeout
+     DELAY = 1000
+
+4. clear_timeout
+   Default values:
+     VAR = myTimeout
+
+
