@@ -983,11 +983,11 @@ Blockly.JavaScript['play_animation_jump'] = function(block) {
     value_jumpvalue = 'undefined';
 
   var code = '';
-  code += 'if (currentAnimFrame != previousAnimFrame) {\n';
+  // code += 'if (currentAnimFrame != previousAnimFrame) {\n';
   code += 'scene.addSequenceWaitValue(' + strNoWait + ');\n';
   code += 'scene.animPlayAllChildrenInTime(' + value_animation + ',' + value_positions + ',' + value_durationms + ', function(){'+ statements_callbackfunction + '}, ' + value_numloops + ', ' + value_onsample + ', ' + value_bypass + ', ' + value_previousanimframe + ', ' + value_jumpvalue + ');\n';
-  code += 'previousAnimFrame = ' + value_positions + ';\n';
-  code += '}';
+  // code += 'previousAnimFrame = ' + value_positions + ';\n';
+  // code += '}';
   if (checkbox_nowait)
     code+= '\n';
   else
